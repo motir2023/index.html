@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Місія: База даних</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --site-primary: #2457D6;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #DDF4E8;
+  --site-on-secondary: #163C2D;
+  --site-background: #F4F7FC;
+  --site-on-background: #17233B;
+  --site-font-body: Inter, "Segoe UI", Arial, sans-serif;
+  --site-font-heading: Inter, "Segoe UI", Arial, sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--site-font-body); background: light-dark(#F4F7FC,#111827); color: light-dark(#17233B,#EDF2FF); }
+#app { min-height: 100vh; width: 100%; background-color: var(--site-background); color: var(--site-on-background); }
+.hero { background: var(--site-primary); color: var(--site-on-primary); padding: calc(34px * var(--site-spacing-scale)) max(20px, calc((100vw - 980px)/2)); position: relative; overflow: hidden; }
+.hero:after { content: "✦"; position:absolute; right: 9%; top: -34px; font-size: 160px; opacity: var(--site-decoration-opacity); color: #FFFFFF; }
+.hero-inner { max-width: 980px; margin: auto; position:relative; z-index:1; }
+.kicker { text-transform: uppercase; letter-spacing: .13em; font-size: .78rem; font-weight: 800; opacity: .82; }
+h1 { font-family: var(--site-font-heading); font-size: calc(clamp(2rem, 5vw, 3.5rem) * var(--site-heading-scale)); margin: 12px 0; line-height: 1.05; }
+.hero p { max-width: 650px; font-size: 1.08rem; line-height: 1.6; }
+main { max-width: 980px; margin: auto; padding: calc(26px * var(--site-spacing-scale)) 18px 48px; }
+.stats { display:grid; grid-template-columns: repeat(3,1fr); gap:12px; margin-bottom:22px; }
+.stat, .panel { background: light-dark(#FFFFFF,#1F2937); border:1px solid light-dark(#DCE4F0,#374151); border-radius: calc(18px * var(--site-radius-scale)); padding:18px; }
+.stat strong { display:block; font-size:1.45rem; color:var(--site-primary); }
+.stat span { font-size:.88rem; opacity:.8; }
+.panel { margin-bottom:18px; }
+.panel h2 { margin:0 0 12px; font-size: calc(1.35rem * var(--site-heading-scale)); }
+.mission-head { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+.emoji { font-size:1.8rem; }
+.muted { opacity:.78; line-height:1.55; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; min-width:420px; }
+th,td { text-align:left; padding:11px 12px; border-bottom:1px solid light-dark(#E4EAF3,#374151); }
+th { background: light-dark(#EDF3FF,#263449); font-size:.88rem; }
+.controls { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+label { display:block; font-size:.9rem; font-weight:700; margin-bottom:6px; }
+input,select { width:100%; padding:12px; border:1px solid light-dark(#B8C6DA,#4B5563); border-radius:10px; background:light-dark(#FFFFFF,#111827); color:inherit; font:inherit; }
+button { border:0; border-radius:11px; padding:12px 16px; background:var(--site-primary); color:var(--site-on-primary); font:inherit; font-weight:750; cursor:pointer; }
+button:hover { filter:brightness(1.08); }
+button:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid #F59E0B; outline-offset:2px; }
+button.secondary { background:light-dark(#E7EDFA,#374151); color:light-dark(#20365E,#F9FAFB); }
+.action-row { display:flex; flex-wrap:wrap; gap:9px; margin-top:13px; }
+.notice { padding:12px 14px; border-radius:12px; margin-top:12px; background:var(--site-secondary); color:var(--site-on-secondary); line-height:1.45; }
+.quiz-q { padding:14px 0; border-bottom:1px solid light-dark(#E4EAF3,#374151); }
+.quiz-q:last-child { border-bottom:0; }
+.quiz-q p { margin:0 0 10px; font-weight:750; }
+.answers { display:grid; gap:8px; }
+.answer { text-align:left; background:light-dark(#F0F4FB,#283548); color:inherit; border:1px solid light-dark(#DCE4F0,#4B5563); font-weight:500; }
+.answer.chosen { outline:2px solid var(--site-primary); }
+.answer.correct { background:#DDF4E8; color:#163C2D; border-color:#31966A; }
+.answer.wrong { background:#FDE8E7; color:#7B2420; border-color:#D65A54; }
+.progress { height:9px; background:light-dark(#E4EAF3,#374151); border-radius:99px; overflow:hidden; margin:10px 0 18px; }
+.progress div { height:100%; width:0; background:var(--site-primary); transition:width .2s; }
+.footer { text-align:center; font-size:.85rem; opacity:.7; padding:8px; }
+@media(max-width:600px){ .stats{grid-template-columns:1fr;} .controls{grid-template-columns:1fr;} .hero{padding:28px 20px;} .hero:after{right:-25px;font-size:120px;} main{padding:18px 12px 32px;} }
+</style>
+</head>
+<body>
+<div id="app">
+<header class="hero"><div class="hero-inner"><div class="kicker">Інформатика · інтерактивна місія</div><h1>🕵️ Місія: База даних</h1><p>Стань цифровим детективом: упорядковуй записи, знаходь потрібну інформацію та перевір, чи розумієш, як працюють бази даних.</p></div></header>
+<main>
+<div class="stats"><div class="stat"><strong id="recordCount">4</strong><span>записи в нашій базі</span></div><div class="stat"><strong id="foundCount">4</strong><span>знайдено за фільтром</span></div><div class="stat"><strong id="scoreTop">0/5</strong><span>результат вікторини</span></div></div>
+<section class="panel"><div class="mission-head"><span class="emoji">📁</span><div><h2>Місія 1. Роздивись базу</h2><div class="muted">Уявімо, що ми ведемо каталог улюблених ігор учнів. Кожен рядок — окремий запис, а стовпці — поля.</div></div></div>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>Ім’я</th><th>Клас</th><th>Улюблена гра</th></tr></thead><tbody id="records"></tbody></table></div>
+<div class="controls"><div><label for="filterGame">Знайти за грою</label><select id="filterGame"><option value="Усі">Усі ігри</option><option>Minecraft</option><option>Roblox</option><option>Sims 4</option><option>Інша</option></select></div><div><label for="filterClass">Знайти за класом</label><select id="filterClass"><option value="Усі">Усі класи</option><option>9-А</option><option>9-Б</option><option>9-В</option></select></div></div>
+<div class="notice" id="filterMessage" aria-live="polite">Підказка: спробуй знайти всіх, хто грає в Minecraft.</div></section>
+<section class="panel"><div class="mission-head"><span class="emoji">🧩</span><div><h2>Місія 2. Додай нового гравця</h2><div class="muted">Коли додаємо новий рядок, ми створюємо новий запис у базі.</div></div></div>
+<div class="controls"><div><label for="studentName">Ім’я (вигадане)</label><input id="studentName" maxlength="30" placeholder="Наприклад, Олена"></div><div><label for="studentClass">Клас</label><select id="studentClass"><option>9-А</option><option>9-Б</option><option>9-В</option></select></div><div><label for="studentGame">Улюблена гра</label><select id="studentGame"><option>Minecraft</option><option>Roblox</option><option>Sims 4</option><option>Інша</option></select></div><div style="display:flex;align-items:end"><button id="addRecord" style="width:100%">＋ Додати запис</button></div></div><div class="notice" id="addMessage" aria-live="polite">Використовуй вигадані імена — не вводь паролі чи приватні дані.</div><div class="action-row"><button class="secondary" id="resetData">Повернути початкові записи</button></div></section>
+<section class="panel"><div class="mission-head"><span class="emoji">🎯</span><div><h2>Місія 3. Перевір себе</h2><div class="muted">Обери одну правильну відповідь у кожному запитанні. Наприкінці побачиш свій результат.</div></div></div><div class="progress"><div id="progressBar"></div></div><div id="quiz"></div><div class="action-row"><button id="checkQuiz">Перевірити відповіді</button><button class="secondary" id="retryQuiz">Спробувати ще раз</button></div><div id="quizResult" class="notice" aria-live="polite" hidden></div></section>
+<div class="footer">Навчайся, досліджуй і бережи свої дані 🔐</div>
+</main></div>
+<script>
+const initialRecords = [
+ {id:1,name:'Софія',klass:'9-А',game:'Minecraft'},
+ {id:2,name:'Максим',klass:'9-Б',game:'Roblox'},
+ {id:3,name:'Артем',klass:'9-А',game:'Minecraft'},
+ {id:4,name:'Марія',klass:'9-В',game:'Sims 4'}
+];
+let records = initialRecords.map(x=>({...x}));
+const questions = [
+ {q:'Що таке база даних?',a:['Набір випадкових файлів','Упорядкована сукупність даних','Лише малюнок на комп’ютері'],correct:1,why:'База даних зберігає організовані дані, з якими можна працювати.'},
+ {q:'Що таке поле в таблиці?',a:['Характеристика об’єкта, наприклад ім’я','Увесь рядок таблиці','Кнопка запуску програми'],correct:0,why:'Поле описує певну властивість об’єкта.'},
+ {q:'Що називають записом?',a:['Один стовпець','Рядок із даними про один об’єкт','Назву бази даних'],correct:1,why:'Запис зазвичай містить значення всіх полів для одного об’єкта.'},
+ {q:'Для чого потрібен унікальний ID?',a:['Щоб розрізняти записи','Щоб змінювати колір таблиці','Щоб приховувати всі дані'],correct:0,why:'Унікальний ідентифікатор допомагає точно визначити потрібний запис.'},
+ {q:'Що робить СУБД?',a:['Лише створює презентації','Допомагає створювати й керувати базами даних','Автоматично ремонтує комп’ютер'],correct:1,why:'СУБД — система управління базами даних.'}
+];
+let chosen = {};
+function renderRecords(){
+ const game=document.getElementById('filterGame').value, klass=document.getElementById('filterClass').value;
+ const filtered=records.filter(r=>(game==='Усі'||r.game===game)&&(klass==='Усі'||r.klass===klass));
+ document.getElementById('records').innerHTML=filtered.map(r=>`<tr><td>${r.id}</td><td>${escapeHTML(r.name)}</td><td>${r.klass}</td><td>${escapeHTML(r.game)}</td></tr>`).join('') || '<tr><td colspan="4">Нічого не знайдено. Спробуй інший фільтр.</td></tr>';
+ document.getElementById('recordCount').textContent=records.length;
+ document.getElementById('foundCount').textContent=filtered.length;
+ document.getElementById('filterMessage').textContent=filtered.length===0?'За цими умовами записів немає. Зміни фільтр.':`Знайдено записів: ${filtered.length}. Спробуй змінити фільтри та порівняти результат.`;
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+document.getElementById('filterGame').addEventListener('change',renderRecords);
+document.getElementById('filterClass').addEventListener('change',renderRecords);
+document.getElementById('addRecord').addEventListener('click',()=>{
+ const name=document.getElementById('studentName').value.trim();
+ if(!name){document.getElementById('addMessage').textContent='Спочатку введи вигадане ім’я.';return;}
+ if(records.length>=100){document.getElementById('addMessage').textContent='Для цієї навчальної гри вже достатньо записів. Скинь базу й почни знову.';return;}
+ records.push({id:Math.max(0,...records.map(r=>r.id))+1,name,klass:document.getElementById('studentClass').value,game:document.getElementById('studentGame').value});
+ document.getElementById('studentName').value='';renderRecords();document.getElementById('addMessage').textContent=`Запис додано! Тепер у базі ${records.length} записів.`;
+});
+document.getElementById('resetData').addEventListener('click',()=>{records=initialRecords.map(x=>({...x}));document.getElementById('filterGame').value='Усі';document.getElementById('filterClass').value='Усі';renderRecords();document.getElementById('addMessage').textContent='Початкову базу відновлено.';});
+function renderQuiz(){
+ document.getElementById('quiz').innerHTML=questions.map((q,i)=>`<div class="quiz-q"><p>${i+1}. ${q.q}</p><div class="answers">${q.a.map((a,j)=>`<button class="answer ${chosen[i]===j?'chosen':''}" data-q="${i}" data-a="${j}" aria-pressed="${chosen[i]===j}">${String.fromCharCode(65+j)}. ${a}</button>`).join('')}</div></div>`).join('');
+ document.querySelectorAll('.answer').forEach(b=>b.addEventListener('click',()=>{chosen[Number(b.dataset.q)]=Number(b.dataset.a);renderQuiz();updateProgress();document.getElementById('quizResult').hidden=true;}));
+ updateProgress();
+}
+function updateProgress(){document.getElementById('progressBar').style.width=(Object.keys(chosen).length/questions.length*100)+'%';}
+document.getElementById('checkQuiz').addEventListener('click',()=>{
+ if(Object.keys(chosen).length<questions.length){const box=document.getElementById('quizResult');box.hidden=false;box.textContent=`Дай відповідь на всі запитання. Уже виконано: ${Object.keys(chosen).length} із ${questions.length}.`;return;}
+ const score=questions.filter((q,i)=>chosen[i]===q.correct).length;
+ document.querySelectorAll('.answer').forEach(b=>{const qi=Number(b.dataset.q),ai=Number(b.dataset.a);b.classList.remove('chosen');if(ai===questions[qi].correct)b.classList.add('correct');else if(chosen[qi]===ai)b.classList.add('wrong');});
+ const box=document.getElementById('quizResult');box.hidden=false;box.textContent=`Твій результат: ${score} із ${questions.length}. `+(score===5?'Чудово! Ти справжній детектив даних!':score>=3?'Гарна робота! Переглянь пояснення й спробуй покращити результат.':'Не здавайся! Прочитай пояснення та спробуй ще раз.')+' '+questions.map((q,i)=>`${i+1}) ${q.why}`).join(' ');
+ document.getElementById('scoreTop').textContent=`${score}/5`;
+});
+document.getElementById('retryQuiz').addEventListener('click',()=>{chosen={};document.getElementById('quizResult').hidden=true;document.getElementById('scoreTop').textContent='0/5';renderQuiz();});
+renderRecords();renderQuiz();
+</script>
+</body>
+</html>
